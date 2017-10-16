@@ -5,20 +5,24 @@ import { join } from 'path';
 import transform from '../transform';
 
 import * as models from './models';
+import * as services from './services';
 import * as routeComponents from './routeComponents';
 import * as router from './router';
 import * as project from './project';
 import * as entry from './entry';
 import * as components from './components';
+import * as zatlas from './zatlas';
 
 const TYPE_SEP = '.';
 const apiMap = {
   models,
+  services,
   routeComponents,
   router,
   project,
   entry,
   components,
+  zatlas,
 };
 
 export default function(type, payload) {

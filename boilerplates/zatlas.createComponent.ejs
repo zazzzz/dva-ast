@@ -1,0 +1,28 @@
+import React, { PureComponent } from 'react';
+<% if (cssPath) { %>
+import styles from './<%= componentName %>.css';
+<% } %>
+class <%= componentName %> extends PureComponent {
+  render() {
+    const { name, item, columnWidth, rowHeight, margin, style, scale } = this.props;
+    const size = {
+      width: item.w * columnWidth + (item.w - 1) * margin,
+      height: rowHeight * item.h + (item.h - 1) * margin
+    };
+
+    return (
+      <div
+        style={style}
+        className={styles.item_wrapper}
+        scale={scale}
+        key={item.i}
+      >
+        <div className={styles.item_container}>
+          {this.props.genChart(item.i, size, name)}
+        </div>
+      </div>
+    );
+  }
+}
+
+export default <%= componentName %>;

@@ -1,0 +1,29 @@
+import { delay } from 'dva/saga';
+
+import { TIMEOUT } from '@/meta';
+import * as services from 'services/<%= namespace %>';
+
+export default {
+  namespace: '<%= namespace %>',
+
+  state: {},
+
+  reducers: {},
+
+  effects: {
+    *query({ payload: { callback } }, { race, call }) {
+      const { res, timeout } = yield race({
+        res: call(services.query),
+        timeout: call(delay, TIMEOUT)
+      });
+
+      if (timeout) {
+        throw new Error('server timeout');
+      }
+
+      callback(res.data);
+    }
+  },
+
+  subscriptions: {}
+};

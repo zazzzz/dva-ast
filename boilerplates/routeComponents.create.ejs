@@ -1,0 +1,22 @@
+import React from 'react';
+import { connect } from 'dva';
+<% if (css) { %>
+import styles from './<%= componentName %>.css';
+<% } %>
+function <%= componentName %>() {
+  return (
+    <% if (css) { %>
+    <div className={styles.root}>
+    <% } else { %>
+    <div>
+    <% } %>
+      Route Component: <%= componentName %>
+    </div>
+  );
+}
+
+function mapStateToProps() {
+  return {};
+}
+
+export default connect(mapStateToProps)(<%= componentName %>);

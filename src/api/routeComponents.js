@@ -1,6 +1,7 @@
 import {
-  getTemplate,
+  renderTemplate,
   writeFile,
+  writeCSSFile,
   readFile,
   removeFile,
 } from './utils';
@@ -12,8 +13,7 @@ import j from 'jscodeshift';
 
 export function create(payload) {
   assert(payload.componentName, 'api/routeComponents/create: payload should have componentName');
-  const template = getTemplate('routeComponents.create');
-  const source = template(payload);
+  const source = renderTemplate('routeComponents.create', payload);
   const filePath = join(payload.sourcePath, payload.filePath);
   assert(!existsSync(filePath), 'api/routeComponents/create: file exists');
   writeFile(filePath, source);
@@ -25,7 +25,7 @@ export function create(payload) {
       cssFilePath = filePath.slice(0, filePath.lastIndexOf(en));
     }
     cssFilePath = cssFilePath + '.css';
-    writeFile(cssFilePath, `\r\n.normal {\r\n}\r\n`);
+    writeCSSFile(cssFilePath, `\r\n.root {\r\n\r\n}\r\n`);
   }
 }
 

@@ -23,7 +23,7 @@ const methods = {
   // TODO: support config router with JavaScript Object
   getRouterInfo() {
     const routeByIds = {};
-    const ROUTER_COMPONENTS = ['Router', 'Route', 'Redirect', 'IndexRedirect', 'IndexRoute'];
+    const ROUTER_COMPONENTS = ['Router', 'Route', 'Switch', 'Redirect', 'IndexRedirect', 'IndexRoute'];
 
     function parse(node, parentPath = '', parentId, parentDepth = -1) {
       assert(
@@ -85,14 +85,17 @@ const methods = {
     }
 
     function getAttributeValue(node) {
-      if (node.type === 'Literal') {
-        return node.value;
-      } else if (node.expression.type === 'Identifier') {
-        return node.expression.name;
-      } else if (node.type === 'JSXExpressionContainer') {
-        return j(node.expression).toSource();
+      if (node) {
+        if (node.type === 'Literal') {
+          return node.value;
+        } else if (node.expression.type === 'Identifier') {
+          return node.expression.name;
+        } else if (node.type === 'JSXExpressionContainer') {
+          return j(node.expression).toSource();
+        }
+        throw new Error(`getRouterTree: unsupported attribute type`);
       }
-      throw new Error(`getRouterTree: unsupported attribute type`);
+      return null;
     }
 
     return this.simpleMap(path => ({

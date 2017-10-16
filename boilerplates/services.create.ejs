@@ -1,0 +1,11 @@
+import request from 'utils/request';
+import { prefix, <%= namespace %> } from '@/meta';
+
+const { path, method } = <%= namespace %>;
+
+export function fetch() {
+  const url = `${prefix}${path}`;
+  return request(url, {
+    method: method
+  });
+}

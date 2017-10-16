@@ -1,0 +1,54 @@
+<% if (!simple) { %>
+import { delay } from 'dva/saga';
+
+import { TIMEOUT } from '@/meta';
+import * as services from 'services/<%= namespace %>';
+
+export default {
+  namespace: '<%= namespace %>',
+
+  state: <%- state ? JSON.stringify(state, null, 2) : {} %>,
+
+  reducers: {
+    save(state, { payload }) {
+      return { ...state, ...payload };
+    }
+  },
+
+  effects: {
+    *fetch({ payload }, { call, put, race }) {
+      const { data, timeout } = yield race({
+        data: call(services.fetch, payload),
+        timeout: call(delay, TIMEOUT)
+      });
+
+      if (timeout) {
+        throw new Error('<%= namespace %> server timeout');
+      }
+
+      if (!data.success) {
+        throw new Error(data.errorMsg || '<%= namespace %> server error');
+      }
+
+      yield put({
+        type: 'save',
+        payload: data.result
+      });
+    }
+  },
+
+  subscriptions: {}
+};
+<% } else { %>
+export default {
+  namespace: '<%= namespace %>',
+
+  state: <%- state ? JSON.stringify(state, null, 2) : {} %>,
+
+  reducers: {},
+
+  effects: {},
+
+  subscriptions: {}
+};
+<% } %>

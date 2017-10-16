@@ -1,11 +1,8 @@
 import {
-  getTemplate,
   writeFile,
   readFile,
-  removeFile,
 } from './utils';
 import { existsSync } from 'fs';
-import { getExpression } from '../utils/index';
 import { join, sep } from 'path';
 import relative from 'relative';
 import assert from 'assert';
@@ -18,7 +15,7 @@ function findRouterNode(root) {
     j.JSXElement, {
       openingElement: {
         name: {
-          name: 'Router'
+          name: 'Switch'
         }
       }
     }
@@ -93,10 +90,15 @@ function createElement(root, el, attributes = [], parentId) {
                 j.identifier(attr.value)
               )
             )
-          } else {
+          } else if (attr.value) {
             return j.jsxAttribute(
               j.jsxIdentifier(attr.key),
               j.literal(attr.value)
+            );
+          } else {
+            return j.jsxAttribute(
+              j.jsxIdentifier(attr.key),
+              null
             );
           }
         }),
@@ -121,6 +123,7 @@ function __createRoute(payload, type) {
   const attributes = [];
   if (path) {
     attributes.push({ key: 'path', value: path });
+    attributes.push({ key: 'exact', value: null });
   }
   if (component.componentName) {
     attributes.push({ key: 'component', value: component.componentName, isExpression: true });

@@ -1,0 +1,155 @@
+import React, { Component } from 'react';
+import _ from 'lodash';
+import ReactGridLayout from 'react-grid-layout';
+import { connect } from 'dva';
+import { chartComponents } from '@/constants';
+
+import './<%= componentName %>.css';
+<% planeList.forEach(function(item){ %>
+import <%= item.componentName %> from 'components/<%= componentName %>/<%= item.componentName %>'
+<% }) %>
+class <%= componentName %> extends Component {
+  genChart = (id, size, name) => {
+    const { planes, activePlane } = this.props.options;
+    const plane = planes[id];
+    if (!plane) return;
+
+    let ItemComponent;
+    if (plane.component.component) {
+      ItemComponent = plane.component.component;
+    } else {
+      _.forEach(_.values(chartComponents), components => {
+        if (components[plane.component.type]) {
+          ItemComponent = components[plane.component.type].component;
+        }
+      });
+    }
+
+    if (!ItemComponent) return null;
+    const filter = this.props.filter[id] || [];
+    const path = null;
+    const feed = this.props.feeding[id] || {};
+    const d = this.props.existData[id] && !_.isEmpty(this.props.existData[id]) ? this.props.existData[id] : null;
+
+    return (
+      <ItemComponent
+        {...plane.props}
+        size={size}
+        key={id}
+        comId={id}
+        feedings={feed}
+        data={d}
+        mocks={this.props.api[id] || null}
+        activePlane={activePlane}
+        dispatch={this.props.dispatch}
+        filters={filter}
+        onDataClick={null}
+        onFinalData={null}
+        onQuery={this.genOnQuery(name)}
+        path={path}
+        onRefresh={null}
+        onError={(err) => {
+          console.log(err);
+        }}
+      >
+        {this.genChildrenChart(id)}
+      </ItemComponent>
+    );
+  };
+
+  genChildrenChart = id => {
+    const { planes } = this.props.options;
+    const children = _.filter(planes, plane => plane.parentId === id);
+    if (!children || !children.length) return null;
+    return _.map(children, child => this.genChart(child.props.id));
+  };
+
+  genOnQuery(name) {
+    return (types, names, filters, callback, url) => {
+      this.props.dispatch({
+        // type: `${name}/query`,
+        type: 'databinding/query/feeding',
+        payload: {
+          callback,
+          planeId: name,
+          url,
+          filters
+        }
+      });
+    };
+  }
+
+  render() {
+    const {
+      styles,
+      grid: { layout, row, column, transform, margin }
+    } = this.props;
+
+    const globalStyle = styles.global;
+    const maxHeight = parseInt(globalStyle.height, 10);
+    const maxWidth = parseInt(globalStyle.width, 10);
+    const rowHeight = (maxHeight - margin * (row + 1)) / row;
+    const columnWidth = (maxWidth - (column + 1) * margin) / column;
+
+    return (
+      <div
+        ref={ref => {
+          this.container = ref;
+        }}
+        className={styles.mainplane}
+        id="mainplane"
+        style={{
+          ...globalStyle,
+          height: maxHeight,
+          width: maxWidth,
+          transformOrigin: `${transform.originX}% ${transform.originY}%`,
+          transform: `scale(${transform.scale}) translate(${transform.translateX}px, ${transform.translateY}px)`,
+          transitionProperty: 'background'
+        }}
+      >
+        <ReactGridLayout
+          layout={layout}
+          width={maxWidth}
+          rowHeight={rowHeight}
+          cols={column}
+          maxRows={row}
+          autoSize={false}
+          verticalCompact={false}
+          isDraggable={false}
+          isResizable={false}
+        >
+          <% planeList.forEach(function(item){ %>
+          <<%= item.componentName %>
+            key={'<%= item.key %>'}
+            name={'<%= item.componentName %>'}
+            item={layout.filter(t => t.i === '<%= item.key %>').pop()}
+            columnWidth={columnWidth}
+            rowHeight={rowHeight}
+            margin={margin}
+            style={styles['<%= item.key %>']}
+            scale={transform.scale}
+            dispatch={this.props.dispatch}
+            genChart={this.genChart}
+          />
+          <% }) %>
+        </ReactGridLayout>
+      </div>
+    );
+  }
+}
+
+function mapStateToProps(state) {
+  const databinding = state.databinding['<%= componentName %>'];
+
+  return {
+    styles: state.styles['<%= componentName %>'],
+    grid: state.grid['<%= componentName %>'],
+    options: state.options['<%= componentName %>'],
+    feeding: databinding.feeding,
+    filter: databinding.filter,
+    existData: databinding.existData,
+    api: databinding.api
+  };
+}
+
+export default connect(mapStateToProps)(<%= componentName %>);

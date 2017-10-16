@@ -1,0 +1,9 @@
+import request from 'utils/request';
+import { prefix, mock: { path, method } } from '@/meta';
+
+export function query() {
+  const url = `${prefix}${path}/<%= name %>`;
+  return request(url, {
+    method: method
+  });
+}

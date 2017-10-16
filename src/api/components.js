@@ -1,8 +1,7 @@
 import {
-  getTemplate,
+  renderTemplate,
   writeFile,
-  readFile,
-  removeFile,
+  writeCSSFile,
 } from './utils';
 import assert from 'assert';
 import { extname, join } from 'path';
@@ -10,8 +9,7 @@ import { existsSync } from 'fs';
 
 export function create(payload) {
   assert(payload.componentName, 'api/components/create: payload should have componentName');
-  const template = getTemplate('components.create');
-  const source = template(payload);
+  const source = renderTemplate('components.create', payload);
   const filePath = join(payload.sourcePath, payload.filePath);
   assert(!existsSync(filePath), 'api/components/create: file exists');
   writeFile(filePath, source);
@@ -23,6 +21,6 @@ export function create(payload) {
       cssFilePath = filePath.slice(0, filePath.lastIndexOf(en));
     }
     cssFilePath = cssFilePath + '.css';
-    writeFile(cssFilePath, `\r\n.normal {\r\n}\r\n`);
+    writeCSSFile(cssFilePath, `\r\n.root {\r\n\r\n}\r\n`);
   }
 }

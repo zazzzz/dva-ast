@@ -1,5 +1,5 @@
 import {
-  getTemplate,
+  renderTemplate,
   writeFile,
   readFile,
   removeFile,
@@ -15,8 +15,7 @@ Model.register();
 
 export function create(payload) {
   assert(payload.namespace, 'api/models/create: payload should have namespace');
-  const template = getTemplate('models.create');
-  const source = template(payload);
+  const source= renderTemplate('models.create', payload);
   const filePath = join(payload.sourcePath, payload.filePath);
   assert(!existsSync(filePath), 'api/models/create: file exists');
   writeFile(filePath, source);
@@ -42,6 +41,10 @@ export function updateNamespace(payload) {
 
 export function updateState(payload) {
   _action('updateState', payload, ['source']);
+}
+
+export function addState(payload) {
+  _action('addState', payload, ['name', 'source'], ['source']);
 }
 
 export function addReducer(payload) {

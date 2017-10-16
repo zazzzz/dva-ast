@@ -1,8 +1,6 @@
 import {
-  getTemplate,
   writeFile,
   readFile,
-  removeFile,
 } from './utils';
 import { join } from 'path';
 import assert from 'assert';

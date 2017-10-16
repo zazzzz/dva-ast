@@ -1,7 +1,7 @@
 {
-  "name": "dva-ast",
-  "version": "0.3.5",
-  "description": "dva static analysis based on javascript ast.",
+  "name": "zelda-ast",
+  "version": "0.1.8",
+  "description": "zelda static analysis based on javascript ast.",
   "files": [
     "boilerplates",
     "lib",
@@ -10,51 +10,51 @@
   ],
   "scripts": {
     "build": "babel -d lib/ src/",
-    "dev": "npm run build -- -w",
-    "test": "NODE_ENV=test nyc mocha --no-timeouts ./test/*-test.js ./test/**/*-test.js",
-    "debug": "mocha --require babel-register --no-timeouts ./test/*-test.js ./test/**/*-test.js",
-    "report": "nyc report --reporter=html",
-    "coveralls": "nyc report --reporter=text-lcov | coveralls",
-    "prepublish": "npm run build"
+    "dev": "npm run build -- -w"
   },
+  "main": "index.js",
   "dependencies": {
-    "fs-extra": "^0.30.0",
-    "glob": "^7.1.0",
-    "handlebars": "^4.0.5",
+    "ejs": "^2.5.7",
+    "fs-extra": "^4.0.2",
+    "glob": "^7.1.2",
     "jscodeshift": "^0.3.32",
     "lodash.flatten": "^4.4.0",
     "lodash.once": "^4.1.1",
     "lodash.uniq": "^4.5.0",
+    "prettier": "^1.7.2",
     "relative": "^3.0.2"
   },
   "devDependencies": {
-    "babel-cli": "^6.14.0",
+    "babel-cli": "^6.26.0",
     "babel-plugin-add-module-exports": "^0.2.1",
-    "babel-preset-node": "^5.1.1",
-    "babel-register": "^6.14.0",
-    "expect": "^1.20.2",
-    "mocha": "^3.0.2",
-    "nyc": "^8.3.0"
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-preset-env": "^1.6.0"
+  },
+  "babel": {
+    "presets": [
+      [
+        "env",
+        {
+          "targets": {
+            "node": "current"
+          }
+        }
+      ]
+    ],
+    "plugins": [
+      "add-module-exports",
+      "transform-object-rest-spread"
+    ]
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/dvajs/dva-ast"
+    "url": "http://gitlab.zhonganonline.com/frontend-engineering/zelda-ast"
   },
-  "homepage": "https://github.com/dvajs/dva-ast",
+  "homepage": "http://gitlab.zhonganonline.com/frontend-engineering/zelda-ast",
   "keywords": [
-    "dva",
+    "zelda",
     "ast"
   ],
-  "author": "Chris Fan <chris.fan.dev@gmail.com>",
-  "nyc": {
-    "include": [
-      "src/**/*.js"
-    ],
-    "require": [
-      "babel-register"
-    ],
-    "sourceMap": false,
-    "instrument": false
-  },
+  "author": "yangxu <yangxu@zhongan.io>",
   "license": "MIT"
 }

@@ -1,0 +1,46 @@
+<% if (!state) { %>
+import React from 'react';
+<% if (css) { %>
+import styles from './<%= componentName %>.css';
+<% } %>
+function <%= componentName %>() {
+  return (
+    <% if (css) { %>
+    <div className={styles.root}>
+    <% } else { %>
+    <div>
+    <% } %>
+      Component: <%= componentName %>
+    </div>
+  );
+}
+
+export default <%= componentName %>;
+<% } else { %>
+import React, { PureComponent } from 'react';
+// import PropTypes from 'prop-types';
+<% if (css) { %>
+import styles from './<%= componentName %>.css';
+<% } %>
+class <%= componentName %> extends PureComponent {
+  static propTypes = {};
+
+  static defaultProps = {};
+
+  state = {};
+
+  render() {
+    return (
+      <% if (css) { %>
+      <div className={styles.root}>
+      <% } else { %>
+      <div>
+      <% } %>
+        Component: <%= componentName %>
+      </div>
+    );
+  }
+}
+
+export default <%= componentName %>;
+<% } %>
